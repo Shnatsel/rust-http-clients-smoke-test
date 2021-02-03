@@ -8,7 +8,7 @@ use std::time::Duration;
 
 fn main() {
     match smoke_test() {
-        Ok(()) => {println!("Did not hang! Success")}
+        Ok(()) => println!("Did not hang! Success"),
         Err(err) => {
             println!("Did not hang! Error: {}", err);
             std::process::exit(1);
@@ -17,7 +17,10 @@ fn main() {
 }
 
 fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
-    let url = format!("http://{}", env::args().skip(1).next().expect("No URL provided"));
+    let url = format!(
+        "http://{}",
+        env::args().skip(1).next().expect("No URL provided")
+    );
     println!("Fetching {}", url);
 
     let agent = ureq::builder()

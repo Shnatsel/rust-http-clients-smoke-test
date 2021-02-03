@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -e
-
 binary_to_invoke="$1"
 url="$2"
 

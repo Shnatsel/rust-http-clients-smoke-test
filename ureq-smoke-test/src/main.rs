@@ -30,26 +30,34 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
 
     let response = agent.get(&url).call()?;
     println!("HTTP status code: {}", response.status());
-    // If we don't do this, the body will never actually be read or maybe even received.
     let mut reader = response.into_reader();
+    // Read the first 16Kb of the body to get an idea of what we've downloaded, ignore the rest.
+    print_first_n_bytes(&mut reader, 16384)?;
+
+    // If we don't do this, the body will never actually be read or maybe even received.
     drain_reader(&mut reader)?;
 
     Ok(())
 }
 
-/// Reads all data from the provided reader without retaining it.
-fn drain_reader(reader: &mut impl Read) -> Result<(), Box<dyn std::error::Error>> {
-    for byte in reader.bytes() {
-        byte?;
-    }
+fn print_first_n_bytes(reader: &mut impl Read, bytes: usize)-> Result<(), Box<dyn std::error::Error>> {
+    let mut limited_reader = reader.take(bytes as u64);
+    drain_reader_to_stdout(&mut limited_reader)?;
     Ok(())
 }
 
-/// For testing purposes
-#[allow(dead_code)]
+/// Reads all data from the provider reader and prints it to stdout
 fn drain_reader_to_stdout(reader: &mut impl Read) -> Result<(), Box<dyn std::error::Error>> {
     let stdout = std::io::stdout();
     let mut stdout = stdout.lock();
     std::io::copy(reader, &mut stdout)?;
+    Ok(())
+}
+
+/// Reads all data from the provided reader and throws it away
+fn drain_reader(reader: &mut impl Read) -> Result<(), Box<dyn std::error::Error>> {
+    for byte in reader.bytes() {
+        byte?;
+    }
     Ok(())
 }

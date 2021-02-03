@@ -44,3 +44,12 @@ fn drain_reader(reader: &mut impl Read) -> Result<(), Box<dyn std::error::Error>
     }
     Ok(())
 }
+
+/// For testing purposes
+#[allow(dead_code)]
+fn drain_reader_to_stdout(reader: &mut impl Read) -> Result<(), Box<dyn std::error::Error>> {
+    let stdout = std::io::stdout();
+    let mut stdout = stdout.lock();
+    std::io::copy(reader, &mut stdout)?;
+    Ok(())
+}

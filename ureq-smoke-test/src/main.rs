@@ -8,9 +8,9 @@ use std::time::Duration;
 
 fn main() {
     match smoke_test() {
-        Ok(()) => println!("Did not hang! Success"),
+        Ok(()) => println!("\nDid not hang! Success"),
         Err(err) => {
-            println!("Did not hang! Error: {}", err);
+            println!("\nDid not hang! Error: {}", err);
             std::process::exit(1);
         }
     }
@@ -30,11 +30,16 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
 
     let response = agent.get(&url).call()?;
     println!("HTTP status code: {}", response.status());
-    let mut reader = response.into_reader();
-    // Read the first 16Kb of the body to get an idea of what we've downloaded, ignore the rest.
-    print_first_n_bytes(&mut reader, 16384)?;
 
-    // If we don't do this, the body will never actually be read or maybe even received.
+    // Print headers
+    for header_name in response.headers_names() {
+        println!("Header: {}: {:?}", header_name, response.all(&header_name));
+    }
+
+    // Read the first 16Kb of the body to get an idea of what we've downloaded, ignore the rest.
+    let mut reader = response.into_reader();
+    print_first_n_bytes(&mut reader, 16384)?;
+    // If we don't do this, the rest of the body will never actually be read or maybe even received.
     drain_reader(&mut reader)?;
 
     Ok(())

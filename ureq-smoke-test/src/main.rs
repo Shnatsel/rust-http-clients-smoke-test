@@ -45,7 +45,10 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn print_first_n_bytes(reader: &mut impl Read, bytes: usize)-> Result<(), Box<dyn std::error::Error>> {
+fn print_first_n_bytes(
+    reader: &mut impl Read,
+    bytes: usize,
+) -> Result<(), Box<dyn std::error::Error>> {
     let mut limited_reader = reader.take(bytes as u64);
     drain_reader_to_stdout(&mut limited_reader)?;
     Ok(())

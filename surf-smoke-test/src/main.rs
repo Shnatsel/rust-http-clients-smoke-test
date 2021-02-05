@@ -25,7 +25,9 @@ async fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
     );
     println!("Fetching {}", url);
 
-    let mut response = surf::get(&url).send().await?;
+    let req = surf::get(&url);
+    let client = surf::client().with(surf::middleware::Redirect::new(10));
+    let mut response = client.send(req).await?;
 
     println!("HTTP status code: {}", response.status());
 

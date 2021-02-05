@@ -3,6 +3,7 @@
 binary_to_invoke="$1"
 url="$2"
 
+export RUST_BACKTRACE=1
 timeout --kill-after=70s 60s "$binary_to_invoke" "$url" > "$url" 2>&1
 exit_code="$?"
 echo "Exit code: $exit_code" >> "$url"

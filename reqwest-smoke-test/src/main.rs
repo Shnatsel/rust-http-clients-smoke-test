@@ -20,9 +20,6 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
 
     let client = reqwest::blocking::ClientBuilder::new()
         .connect_timeout(Duration::from_secs(10))
-        // This is a read timeout, not a full request timeout
-        // It will not protect from malicious remote hosts that try to DoS us by keeping the connection open forever
-        // https://github.com/seanmonstar/reqwest/issues/1161
         .timeout(Duration::from_secs(30))
         .build()?;
 

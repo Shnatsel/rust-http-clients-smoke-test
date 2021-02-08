@@ -19,6 +19,7 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
 
     let response = minreq::get(&url)
         .with_timeout(40)
+        .with_max_redirects(10)
         .send()?;
 
     println!("HTTP status code: {}", response.status_code);

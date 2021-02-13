@@ -35,5 +35,6 @@ fn smoke_test() -> Result<(), mio_httpc::Error> {
     // mio_httpc does not support any encoding conversion, so this will be in whatever encoding we received
     let first_8kb_of_body: Vec<u8> = body.iter().take(8192).copied().collect();
     std::io::stdout().write_all(&first_8kb_of_body)?;
+    print!("\n");
     Ok(())
 }

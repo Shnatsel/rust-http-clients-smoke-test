@@ -347,9 +347,9 @@ dependencies = [
 
 [[package]]
 name = "mio_httpc"
-version = "0.9.3"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d14f17f462902cf14f02c3e50d3303f56d92649e714917839655670fa99d0d1a"
+checksum = "51fd6f60c30912424ba93b9e0971586583c2bb0f656db5e66a5cc9120554f10a"
 dependencies = [
  "byteorder",
  "core-foundation",

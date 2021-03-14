@@ -2,9 +2,11 @@ use std::{env, io::Write};
 use std::time::Duration;
 
 use tokio::time::timeout;
+use tokio;
 
-fn main() {
-    match smoke_test() {
+#[tokio::main]
+pub async fn main() {
+    match smoke_test().await {
         Ok(()) => println!("Did not hang! Success"),
         Err(err) => {
             println!("Did not hang! Error: {}", err);
@@ -13,7 +15,7 @@ fn main() {
     }
 }
 
-fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
+async fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
     let url = format!(
         "http://{}",
         env::args().skip(1).next().expect("No URL provided")
@@ -24,7 +26,7 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
         .max_redirects(10)
         .timeout(Duration::from_secs(10))
         .finish();
-    let mut response = futures::executor::block_on(client.get(&url).send())?;
+    let mut response = client.get(&url).send().await?;
 
     println!("HTTP status code: {}", response.status());
 
@@ -37,7 +39,7 @@ fn smoke_test() -> Result<(), Box<dyn std::error::Error>> {
 
     // Print the first 8kb of the body to get an idea of what we've downloaded, ignore the rest.
     // awc does not support any encoding conversion, so this will be in whatever encoding we received
-    let body = futures::executor::block_on(timeout(Duration::from_secs(30), response.body()))??;
+    let body = timeout(Duration::from_secs(30), response.body()).await??;
     // Print the first 8k chars of the body to get an idea of what we've downloaded, ignore the rest.
     let first_8kb_of_body: Vec<u8> = body.iter().take(8192).copied().collect();
     std::io::stdout().write_all(&first_8kb_of_body)?;

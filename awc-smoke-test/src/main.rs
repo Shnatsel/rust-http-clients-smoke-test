@@ -1,12 +1,11 @@
 use std::time::Duration;
 use std::{env, io::Write};
 
-use tokio;
+use actix_rt::System;
 use tokio::time::timeout;
 
-#[actix_web::main]
-pub async fn main() {
-    match smoke_test().await {
+fn main() {
+    match System::new().block_on(smoke_test()) {
         Ok(()) => println!("Did not hang! Success"),
         Err(err) => {
             println!("Did not hang! Error: {}", err);

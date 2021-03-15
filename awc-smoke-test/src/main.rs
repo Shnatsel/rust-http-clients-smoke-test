@@ -1,10 +1,10 @@
-use std::{env, io::Write};
 use std::time::Duration;
+use std::{env, io::Write};
 
-use tokio::time::timeout;
 use tokio;
+use tokio::time::timeout;
 
-#[tokio::main]
+#[actix_web::main]
 pub async fn main() {
     match smoke_test().await {
         Ok(()) => println!("Did not hang! Success"),
